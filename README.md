@@ -22,4 +22,3 @@
 ## Системные требования
 - Android 5.0 или выше
 - Установленный в системе синтезатор речи. Рекомендуется использовать [RHVoice](https://f-droid.org/ru/packages/com.github.olga_yakovleva.rhvoice.android/).
-- Процессор с архитектурой arm64, arm, x86 или x86_64
