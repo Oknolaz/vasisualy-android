@@ -9,7 +9,7 @@ def main(say):
         if i == say:
             bye = random.choice(("Пока, мой друг.", "Пока, товарищ.", "До встречи.", "Прощай.", "До свидания.", "Не покидай меня!", "Очень жаль расставаться с тобой."))
             speak.speak(bye)
-            time.sleep(5)
+            time.sleep(10)
             exit()
             
     return ""

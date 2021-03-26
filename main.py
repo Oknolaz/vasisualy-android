@@ -12,6 +12,7 @@ from kivy.uix.scrollview import ScrollView
 # Core
 from core import speak
 from core import talk
+from core import recognise
 import plyer
 import random
 
@@ -39,28 +40,21 @@ from skills import poweroff
 from skills import call
 from skills import todolist
 from skills import shoplist
-from skills import flash
-
-is_paused = False
-isGuessNum = False
-guesstry = 0
-isRoulette = False
-bullet = random.choice([0, 0, 0, 0, 0, 1])
+from skills import netconnection
+from skills import guess_num
+from skills import rulette
+from skills import math
 
 wrong = ("Простите, я вас не понимаю.", "Мне кажется вы несёте какой-то бред.", "Что?", "Вы, наверное, ошиблись. Я вас не понимаю.", "Извините, я появился совсем недавно, я пока понимаю очень мало слов.", "Чего?", "А? Что? Я Вас не понимаю.", "Пожалуйста, не говорите слов, которых я незнаю.", "Вы пытаетесь оскорбить меня этим?", "Не издевайтесь надо мной, я знаю не так много слов.", "Извините, я не могу Вас понять.", "А?", "Объясните попроще.", "Пожалуйста, прочитайте моё описание. Скорее всего я не умею делать то, что вы меня просите или попробуйте использовать синонимы.", "Вы ошиблись.") # Ответы на неизвестную команду.
-guessnum = ("Угадай число", "угадай число", "Поиграем в число", "поиграем в число", "Играть в угадай число", "играть в угадай число", "Играть в число", "играть в число", "Угадать число", "угадать число", "Угадывать число", "угадывать число")
-russian_roulette = ("Русская рулетка", "русская рулетка", "В русскую рулетку", "в русскую рулетку")
 
+randnum = -1
+isGuessNum = False
+isRuLette = False
 
 
 class VasisualyApp(MDApp):
 
     def build(self):
-        self.guessTry = 0
-        self.isGuessNum = False
-        randnum = 0
-        self.isRoulette = False
-        
         self.root = BoxLayout(orientation = 'vertical')
         self.layoutscr = GridLayout(cols = 1, spacing = 3, size_hint_y = None)
         self.layoutscr.bind(minimum_height = self.layoutscr.setter('height'))
@@ -85,9 +79,13 @@ class VasisualyApp(MDApp):
     def vasmsg(self, instance):
         self.say = self.input.text
         self.input.text = ''
-        self.say.capitalize()
+        self.say = self.say.capitalize()
         usrMsg = MDLabel(text = self.say, size_hint_y = None, text_size = [self.layoutscr.width, None], halign = "right")
         self.layoutscr.add_widget(usrMsg)
+        self.program()
+        
+    def recogniser(self):
+        self.say = recognise.recognise(self.layoutscr)
         self.program()
         
     def keyboardVisible(self, instance, value):
@@ -101,162 +99,108 @@ class VasisualyApp(MDApp):
             pass
 
     def program(self):
-        say = self.say.capitalize()
+        say = self.say
         skillUse = False
+        
         if say == '' or say == ' ':
             pass
-        
-        for i in guessnum:
-            if i in say:
-                global randnum
-                randnum = random.randint(0, 100)
-                speak.speak("Я загадал число от 0 до 100. Угадай его.", self.layoutscr)
-                self.isGuessNum = True
-                skillUse = True
-                guessTry = 0
-                break
-            
-        for i in russian_roulette:
-            if i in say:
-                global isRoulette
-                skillUse = True
-                bullet = random.choice([0, 0, 0, 0, 0, 1])
-                speak.speak("Я первый стреляю, если хочешь выстрелить - скажи \"выстрел\".", self.layoutscr)
-                self.isRoulette = True
-                if bullet == 1:
-                    #media=music.inst.media_new("assets/shot.wav")
-                    #music.player.set_media(media)
-                    #music.player.play()
-                    speak.speak("Ты выиграл.", self.layoutscr)
-                    isRoulette = False
-                else:
-                    #media=music.inst.media_new("assets/misfire.wav")
-                    #music.player.set_media(media)
-                    #music.player.play()
-                    speak.speak("Выстрела нет. Твоя очередь.", self.layoutscr)
 
-        if time_date.main(say) != "":
+        if time_date.main(say):
             speak.speak(time_date.main(say), self.layoutscr)
             skillUse = True
             
-        elif exit.main(say) != "":
+        elif exit.main(say):
             skillUse = True
             
-        elif joke.main(say) != "":
+        elif joke.main(say):
             speak.speak(joke.main(say), self.layoutscr)
             skillUse = True
             
-        elif weather.main(say, self.layoutscr) != "":
+        elif weather.main(say, self.layoutscr):
             skillUse = True
             
-        elif weather_no_city.main(say, self.layoutscr) != "":
+        elif weather_no_city.main(say, self.layoutscr):
             skillUse = True
             
-        elif music.main(say, self.layoutscr) != "":
+        elif music.main(say, self.layoutscr):
             skillUse = True
             
-        elif screenshot.main(say, self.layoutscr) != "":
+        elif screenshot.main(say, self.layoutscr):
             skillUse = True
             
-        elif resay.main(say, self.layoutscr) != "":
+        elif resay.main(say, self.layoutscr):
             skillUse = True
             
-        elif wiki.main(say, self.layoutscr) != "":
+        elif wiki.main(say, self.layoutscr):
             skillUse = True
             
-        elif location.main(say, self.layoutscr) != "":
+        elif location.main(say, self.layoutscr):
             skillUse = True
             
-        elif translate.main(say, self.layoutscr) != "":
+        elif translate.main(say, self.layoutscr):
             skillUse = True
             
-        elif news.main(say, self.layoutscr) != "":
+        elif news.main(say, self.layoutscr):
             skillUse = True
             
-        elif coin.main(say, self.layoutscr) != "":
+        elif coin.main(say, self.layoutscr):
             skillUse = True
             
-        elif brightness.main(say, self.layoutscr) != "":
+        elif brightness.main(say, self.layoutscr):
             skillUse = True
             
-        elif battery.main(say, self.layoutscr) != "":
+        elif battery.main(say, self.layoutscr):
             skillUse = True
             
-        elif vibrate.main(say, self.layoutscr) != "":
+        elif vibrate.main(say, self.layoutscr):
             skillUse = True
             
-        elif search.main(say, self.layoutscr) != "":
+        elif search.main(say, self.layoutscr):
             skillUse = True
             
-        elif poweroff.main(say, self.layoutscr) != "":
+        elif poweroff.main(say, self.layoutscr):
             skillUse = True
             
-        elif ytvideo.main(say, self.layoutscr) != "":
+        elif ytvideo.main(say, self.layoutscr):
             skillUse = True
             
-        elif open.main(say, self.layoutscr) != "":
+        elif open.main(say, self.layoutscr):
             skillUse = True
             
-        elif call.main(say, self.layoutscr) != "":
+        elif call.main(say, self.layoutscr):
             skillUse = True
             
-        elif todolist.main(say, self.layoutscr) != "":
+        elif todolist.main(say, self.layoutscr):
             skillUse = True
             
-        elif shoplist.main(say, self.layoutscr) != "":
+        elif shoplist.main(say, self.layoutscr):
             skillUse = True
             
-        elif flash.main(say, self.layoutscr) != "":
+        elif netconnection.main(say, self.layoutscr):
+            skillUse = True
+            
+        elif guess_num.isTriggered(say):
+            skillUse = True
+            global isGuessNum, randnum
+            randnum = guess_num.getRandomNum()
+            isGuessNum = guess_num.startGame(self.layoutscr)
+            
+        elif rulette.isTriggered(say):
+            skillUse = True
+            global isRuLette
+            isRuLette = rulette.startGame(self.listWidget)
+            
+        elif math.calculate(say, self.layoutscr):
             skillUse = True
             
         elif say == 'stop' or say == 'Stop' or say == 'Стоп' or say == 'стоп':
             pass
         
-        elif self.isGuessNum:
-            usrnum = -1
-            try:
-                usrnum = int(say)
-            except Exception:
-                pass
-            if usrnum == -1:
-                pass
-            elif usrnum < randnum:
-                speak.speak("Моё число больше.", self.layoutscr)
-                self.guessTry += 1
-            elif usrnum > randnum:
-                speak.speak("Моё число меньше.", self.layoutscr)
-                self.guessTry += 1
-            elif usrnum == randnum:
-                speak.speak(f"Поздравляю, ты выиграл затратив на это {str(self.guessTry+1)} попытки.", self.layoutscr)
-                isGuessNum = False
-                self.guessTry = 0
-                
-        elif self.isRoulette:
-            if say == "Выстрел":
-                bullet = random.choice([0, 0, 0, 0, 0, 1])
-                if bullet == 1:
-                    speak.speak("Ты проиграл.", self.layoutscr)
-                    #media = music.inst.media_new("assets/shot.wav")
-                    #music.player.set_media(media)
-                    #music.player.play()
-                    self.isRoulette = False
-                else:
-                    #media = music.inst.media_new("assets/misfire.wav")
-                    #music.player.set_media(media)
-                    #music.player.play()
-                    speak.speak("Кручу барабан...", self.layoutscr)
-                    bullet = random.choice([0, 0, 0, 0, 0, 1])
-                    if bullet == 1:
-                        speak.speak("Ты выиграл.", self.layoutscr)
-                        #media = music.inst.media_new("assets/shot.wav")
-                        #music.player.set_media(media)
-                        #music.player.play()
-                        self.isRoulette = False
-                    else:
-                        #media = music.inst.media_new("assets/misfire.wav")
-                        #music.player.set_media(media)
-                        #music.player.play()
-                        speak.speak("Теперь ты.", self.layoutscr)
+        elif isGuessNum:
+            isGuessNum = guess_num.game(say, randnum, isGuessNum, self.layoutscr)
+            
+        elif isRuLette:
+            isRuLette = rulette.game(say, self.layoutscr)
             
         else:
             if talk.talk(say) != "" and not skillUse:
