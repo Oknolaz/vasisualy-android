@@ -1,12 +1,11 @@
 import random
+#import vlc
 import os
 from core import speak
-import plyer
 
 #inst = vlc.Instance()
-#player = inst.media_player_new()
+#player=inst.media_player_new()
 is_paused = False
-isInMusicDir = False
 musicIsPlayed = False
 
 trigger = ("Музыка", "музыка", "Включи музыку", "включи музыку", "Танцы", "танцы", "Танец", "танец", "Потанцуй", "потанцуй", "Хочу танцевать", "хочу танцевать", "Хочу плясать", "хочу плясать", "Музыку", "музыку", "Песня", "песня", "Включи песню", "включи песню", "Музычка", "музычка", "Музончик", "музончик", "Танцульки", "танцульки", "Радио", "радио", "Станция", "станция", "Рэдио", "рэдио", "Музыку", "музыку", "Музычку", "музычку", "Мьюзик", "мьюзик", "Танцуй", "танцуй", "Песню", "песню", "Зажги", "зажги", "Зажигай", "зажигай", "Зажгём", "зажгём", "Отжиг", "отжиг", "Музон", "музон", "Музло", "музло")
@@ -56,7 +55,7 @@ def main(say, widget):
                     playFromDir()
                 elif say in stop_music:
                     pass
-            except Exception:
+            except ValueError:
                 if say in stop_music:
                     pass
                 else:
@@ -68,6 +67,7 @@ def main(say, widget):
             
     for i in stop_music:
         if i == say:
+            global usrPlayer
             toSpeak = "Проигрыватель остановлен."
             #player.pause()
             #usrPlayer.stop()
@@ -75,7 +75,7 @@ def main(say, widget):
     for i in nextSong:
         if i == say:
             toSpeak = "Переключаю..."
-            playFromDir()
+            #playFromDir()
             break
     
     if toSpeak != "":
@@ -85,19 +85,14 @@ def main(say, widget):
 
 
 def playFromDir():
-    #global isInMusicDir, musicIsPlayed, usrPlayer
-    #if isInMusicDir:
-        #pass
-    #else:
-        #os.chdir("/storage/emulated/0/Music/")
-        #isInMusicDir = True
-    #playlist = os.listdir()
-    #if musicIsPlayed:
-        #usrPlayer.stop()
-        #usrPlayer = vlc.MediaPlayer(random.choice(playlist))
-        #usrPlayer.play()
-    #else:
-        #usrPlayer = vlc.MediaPlayer(random.choice(playlist))
-        #usrPlayer.play()
-        #musicIsPlayed = True
-    pass
+    global musicIsPlayed, usrPlayer
+    isInMusicDir = True
+    playlist = os.listdir('./music')
+    if musicIsPlayed:
+        usrPlayer.stop()
+        usrPlayer = vlc.MediaPlayer(f'music/{random.choice(playlist)}')
+        usrPlayer.play()
+    else:
+        usrPlayer = vlc.MediaPlayer(f'music/{random.choice(playlist)}')
+        usrPlayer.play()
+        musicIsPlayed = True
