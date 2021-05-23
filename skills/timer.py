@@ -3,21 +3,30 @@ from threading import Thread
 import datetime
 from ru_word2number import w2n
 from time import sleep
-#import vlc
+from jnius import autoclass
+from plyer import notification
+import os
 
-#inst = vlc.Instance()
-#player=inst.media_player_new()
+
+MediaPlayer = autoclass("android.media.MediaPlayer")
+mPlayer = MediaPlayer()
+
 time = 0
 listWidget = None
 
 trigger = ("Поставь таймер на ", "поставь таймер на ", "Включи таймер на ", "включи таймер на ", "Поставь таймер", "поставь таймер", "Включи таймер", "включи таймер")
 
+
 def timerProcess():
     sleep(time)
-    #media = inst.media_new("assets/beep.wav")
-    #player.set_media(media)
-    #player.play()
+    appDir = os.path.dirname(os.path.realpath(__file__))
+    mPlayer.setDataSource(f'{appDir}/../assets/beep.wav')
+    mPlayer.prepare()
+    mPlayer.start()
+    mPlayer.release()
+    notification.notify(title="Время вышло!", message="Таймер сработал.")
     speak.speak("Таймер сработал.", listWidget)
+
 
 def main(say, widget):
     for i in trigger:
@@ -50,11 +59,11 @@ def main(say, widget):
                     workTime = int(time[0]) * 60
             
             if workTime >= 60:
-                toSpeak = "Таймер запущен на " + str(workTime) / 60 + " минут."
+                toSpeak = "Таймер запущен на " + str(workTime / 60) + " минут."
             elif workTime >= 3600:
-                toSpeak = "Таймер запущен на " + str(workTime) / 3600 + " часов."
+                toSpeak = "Таймер запущен на " + str(workTime / 3600) + " часов."
             elif workTime >= 86400:
-                toSpeak = "Таймер запущен на " + str(workTime) / 86400 + " дней."
+                toSpeak = "Таймер запущен на " + str(workTime / 86400) + " дней."
             else:
                 toSpeak = "Таймер запущен на " + str(workTime) + " секунд."
             time = workTime

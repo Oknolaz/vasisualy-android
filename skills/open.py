@@ -15,9 +15,8 @@ def main(say, widget):
                     try:
                         # Открытие браузера
                         speak.speak("Я открыл браузер.")
-                        webbrowser.open_new_tab("https://github.com/Oknolaz/Vasisualy")
                         toSpeak = "..."
-                    except ValueError:
+                    except Exception:
                         toSpeak = "Не удалось открыть веб-браузер"
                             
             for yt in ("Youtube", "youtube", "Ютуб", "ютуб", "Ютьюб", "ютьюб", "Ютюб", "ютюб", "Утуб", "утуб"):

@@ -8,13 +8,14 @@ from kivymd.uix.textfield import MDTextField
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
+from kivy.core.window import Window
 
 # Core
 from core import speak
 from core import talk
 from core import recognise
-import plyer
 import random
+from android.permissions import request_permissions, Permission
 
 # Skills
 from skills import time_date
@@ -58,24 +59,27 @@ isRuLette = False
 class VasisualyApp(MDApp):
 
     def build(self):
-        self.root = BoxLayout(orientation = 'vertical')
-        self.layoutscr = GridLayout(cols = 1, spacing = 3, size_hint_y = None)
-        self.layoutscr.bind(minimum_height = self.layoutscr.setter('height'))
+        self.root = BoxLayout(orientation='vertical')
+        self.layoutscr = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.layoutscr.bind(minimum_height=self.layoutscr.setter('height'))
         
         scrv = ScrollView()
         scrv.add_widget(self.layoutscr)
         self.root.add_widget(scrv)
         
-        gl = GridLayout(cols = 3, size_hint = [1, 0.06])
-        gl.add_widget(MDLabel(text = 'Вы:', size_hint_x = 0.15))
-        self.input = MDTextField(on_text_validate = self.vasmsg, text_validate_unfocus = False)
+        gl = GridLayout(cols=3, size_hint=[1, 0.06], spacing=20)
+        gl.add_widget(MDLabel(text='Вы:', size_hint_x=0.12))
+        self.input = MDTextField(on_text_validate=self.vasmsg, text_validate_unfocus=False)
         gl.add_widget(self.input)
-        send = MDRectangleFlatButton(size_hint_x = 0.2, on_release = self.vasmsg)
+        send = MDRectangleFlatButton(size_hint_x=0.35, on_release=self.vasmsg)
         gl.add_widget(send)
+        Window.softinput_mode = "pan"
         
         self.root.add_widget(gl)
         speak.speak('Привет, меня зовут Васисуалий. Чем могу быть полезен?', self.layoutscr)
-        
+
+        request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_SETTINGS, Permission.CALL_PHONE, Permission.READ_CONTACTS])
+
         return self.root
 
 
@@ -83,7 +87,7 @@ class VasisualyApp(MDApp):
         self.say = self.input.text
         self.input.text = ''
         self.say = self.say.capitalize()
-        usrMsg = MDLabel(text = self.say, size_hint_y = None, text_size = [self.layoutscr.width, None], halign = "right")
+        usrMsg = MDLabel(text=self.say, size_hint_y=None, halign="right")
         self.layoutscr.add_widget(usrMsg)
         self.program()
         
@@ -92,7 +96,7 @@ class VasisualyApp(MDApp):
         self.program()
         
     def keyboardVisible(self, instance, value):
-        self.kbrd = MDLabel(text = "    ", size_hint = [1, 0.35])
+        self.kbrd = MDLabel(text="    ", size_hint=[1, 0.35])
         self.root.add_widget(self.kbrd)
         
     def hideKeyboard(self, instance, value):
@@ -223,7 +227,6 @@ class VasisualyApp(MDApp):
                     randwrong = random.choice(wrong)
                     speak.speak(randwrong, self.layoutscr)
             
-            
-            
+
 if __name__ == '__main__':
     VasisualyApp().run()

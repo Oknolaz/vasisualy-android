@@ -3,6 +3,7 @@ from core import speak
 
 trigger = ("Угадай число", "угадай число", "Поиграем в число", "поиграем в число", "Играть в угадай число", "играть в угадай число", "Играть в число", "играть в число", "Угадать число", "угадать число", "Угадывать число", "угадывать число")
 
+
 def isTriggered(say):
     for i in trigger:
         if i in say:
@@ -13,14 +14,17 @@ def isTriggered(say):
     
     return triggered
 
+
 def getRandomNum():
     randnum = random.randint(0, 100)
     return randnum
+
 
 def startGame(widget):
     speak.speak("Я загадал число от 0 до 100. Угадай его.", widget)
     isGuessNum = True
     return isGuessNum
+
 
 def game(say, num, gameState, widget):
     usrnum = -1

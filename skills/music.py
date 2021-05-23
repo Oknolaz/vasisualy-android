@@ -1,12 +1,16 @@
 import random
-#import vlc
 import os
 from core import speak
+from android.storage import primary_external_storage_path
+from android.permissions import request_permissions, Permission
+from jnius import autoclass
 
-#inst = vlc.Instance()
-#player=inst.media_player_new()
 is_paused = False
 musicIsPlayed = False
+
+MediaPlayer = autoclass("android.media.MediaPlayer")
+AudioManager = autoclass("android.media.AudioManager")
+mPlayer = MediaPlayer()
 
 trigger = ("Музыка", "музыка", "Включи музыку", "включи музыку", "Танцы", "танцы", "Танец", "танец", "Потанцуй", "потанцуй", "Хочу танцевать", "хочу танцевать", "Хочу плясать", "хочу плясать", "Музыку", "музыку", "Песня", "песня", "Включи песню", "включи песню", "Музычка", "музычка", "Музончик", "музончик", "Танцульки", "танцульки", "Радио", "радио", "Станция", "станция", "Рэдио", "рэдио", "Музыку", "музыку", "Музычку", "музычку", "Мьюзик", "мьюзик", "Танцуй", "танцуй", "Песню", "песню", "Зажги", "зажги", "Зажигай", "зажигай", "Зажгём", "зажгём", "Отжиг", "отжиг", "Музон", "музон", "Музло", "музло")
 
@@ -20,11 +24,24 @@ def main(say, widget):
         if i in say:
             radiostation = say.replace(i, '')
             try:
+                global musicIsPlayed
                 if "рок" in radiostation:
-                    radiostation = "http://pub0302.101.ru:8000/stream/trust/mp3/128/69?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjUxLjE1OC4xNDQuMzIiLCJ1c2VyYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6NjguMCkgR2Vja29cLzIwMTAwMTAxIEZpcmVmb3hcLzY4LjAiLCJ1aWRfY2hhbm5lbCI6IjY5IiwidHlwZV9jaGFubmVsIjoiY2hhbm5lbCIsImV4cCI6MTU5NjI3MzUzMn0.04mOBSZ4tirBXTQdbWYpGs8YuJE6Dw7fM7a-zbP-PTs"
-                    media=inst.media_new(radiostation)
-                    player.set_media(media)
-                    player.play()
+                    if musicIsPlayed:
+                        mPlayer.stop()
+                        mPlayer.reset()
+                        mPlayer.release()
+                        radiostation = "http://pub0302.101.ru:8000/stream/trust/mp3/128/69?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjUxLjE1OC4xNDQuMzIiLCJ1c2VyYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6NjguMCkgR2Vja29cLzIwMTAwMTAxIEZpcmVmb3hcLzY4LjAiLCJ1aWRfY2hhbm5lbCI6IjY5IiwidHlwZV9jaGFubmVsIjoiY2hhbm5lbCIsImV4cCI6MTU5NjI3MzUzMn0.04mOBSZ4tirBXTQdbWYpGs8YuJE6Dw7fM7a-zbP-PTs"
+                        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                        mPlayer.setDataSource(radiostation)
+                        mPlayer.prepare()
+                        mPlayer.start()
+                    else:
+                        radiostation = "http://pub0302.101.ru:8000/stream/trust/mp3/128/69?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjUxLjE1OC4xNDQuMzIiLCJ1c2VyYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6NjguMCkgR2Vja29cLzIwMTAwMTAxIEZpcmVmb3hcLzY4LjAiLCJ1aWRfY2hhbm5lbCI6IjY5IiwidHlwZV9jaGFubmVsIjoiY2hhbm5lbCIsImV4cCI6MTU5NjI3MzUzMn0.04mOBSZ4tirBXTQdbWYpGs8YuJE6Dw7fM7a-zbP-PTs"
+                        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                        mPlayer.setDataSource(radiostation)
+                        mPlayer.prepare()
+                        mPlayer.start()
+                        musicIsPlayed = True
                 elif "поп" in radiostation:
                     radiostation = "http://pub0302.101.ru:8000/stream/pro/aac/64/155?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjUxLjE1OC4xNDQuMzIiLCJ1c2VyYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6NjguMCkgR2Vja29cLzIwMTAwMTAxIEZpcmVmb3hcLzY4LjAiLCJ1aWRfY2hhbm5lbCI6IjE1NSIsInR5cGVfY2hhbm5lbCI6ImNoYW5uZWwiLCJleHAiOjE1OTYyNzM2NDh9.9nrmdE85O78l_SWG8ZIbcBb81rlMfjWEFZtyU54v240"
                     media=inst.media_new(radiostation)
@@ -50,12 +67,12 @@ def main(say, widget):
                     media=inst.media_new(radiostation)
                     player.set_media(media)
                     player.play()
-                elif radiostation == '':
-                    toSpeak = "Включаю музыку из твоей папки. Если хочешь слушать радио - то скажи \"включи (жанр) музыку\"."
-                    playFromDir()
                 elif say in stop_music:
                     pass
-            except ValueError:
+                else:
+                    toSpeak = "Включаю музыку из твоей папки. Если хочешь слушать радио - то скажи \"включи (жанр) музыку\"."
+                    playFromDir()
+            except Exception:
                 if say in stop_music:
                     pass
                 else:
@@ -67,15 +84,21 @@ def main(say, widget):
             
     for i in stop_music:
         if i == say:
-            global usrPlayer
             toSpeak = "Проигрыватель остановлен."
-            #player.pause()
-            #usrPlayer.stop()
+            try:
+                mPlayer.stop()
+                mPlayer.reset()
+                musicIsPlayed = False
+            except Exception:
+                pass
             
     for i in nextSong:
         if i == say:
             toSpeak = "Переключаю..."
-            #playFromDir()
+            try:
+                playFromDir()
+            except Exception:
+                toSpeak = "Произошла ошибка."
             break
     
     if toSpeak != "":
@@ -85,14 +108,22 @@ def main(say, widget):
 
 
 def playFromDir():
-    global musicIsPlayed, usrPlayer
-    isInMusicDir = True
-    playlist = os.listdir('./music')
+    global musicIsPlayed
+    storage = primary_external_storage_path()
+    playlist = os.listdir(f"{storage}/Music/")
+
+    for file in playlist:
+        if os.path.isdir(f"{storage}/Music/{file}"):
+            playlist.remove(file)
+
     if musicIsPlayed:
-        usrPlayer.stop()
-        usrPlayer = vlc.MediaPlayer(f'music/{random.choice(playlist)}')
-        usrPlayer.play()
+        mPlayer.stop()
+        mPlayer.reset()
+        mPlayer.setDataSource(f'{storage}/Music/{random.choice(playlist)}')
+        mPlayer.prepare()
+        mPlayer.start()
     else:
-        usrPlayer = vlc.MediaPlayer(f'music/{random.choice(playlist)}')
-        usrPlayer.play()
+        mPlayer.setDataSource(f'{storage}/Music/{random.choice(playlist)}')
+        mPlayer.prepare()
+        mPlayer.start()
         musicIsPlayed = True

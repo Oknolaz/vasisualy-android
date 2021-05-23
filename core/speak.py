@@ -4,5 +4,5 @@ from kivymd.uix.label import MDLabel
 
 def speak(string, widget):
     plyer.tts.speak(string)
-    printtext = MDLabel(text = string, size_hint_y = None, text_size = [widget.width, None])
+    printtext = MDLabel(text=string)
     widget.add_widget(printtext)
