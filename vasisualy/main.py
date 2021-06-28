@@ -17,7 +17,7 @@ import random
 from android.permissions import request_permissions, Permission
 
 # Skills
-from .skills import (time_date, exit, joke, weather, music, screenshot, resay, wiki, location, weather_no_city,
+from .skills import (time_date, exit, weather, music, screenshot, resay, wiki, location, weather_no_city,
                      translate, news, coin, brightness, battery, vibrate, search, open, ytvideo, poweroff, call,
                      todolist, shoplist, netconnection, guess_num, rulette, math, crystal_ball, random_num, timer,
                      old_skills, skill_loader)
