@@ -1,5 +1,6 @@
 from ..core import speak
 import plyer
+from jnius import autoclass, cast
 
 launch = ("Интернет", "интернет", "Браузер", "браузер", "Сеть", "сеть", "Включи интернет", "включи интернет",
           "Открой браузер", "открой браузер", "Включи браузер", "включи браузер", "Открой интернет", "открой интернет",
@@ -23,13 +24,16 @@ def main(say, widget):
                     try:
                         # Открытие браузера
                         toSpeak = "Я открыл браузер."
+
+                        open_url("https://github.com/Oknolaz/vasisualy")
                     except Exception:
                         toSpeak = "Не удалось открыть веб-браузер"
                             
             for yt in ("Youtube", "youtube", "Ютуб", "ютуб", "Ютьюб", "ютьюб", "Ютюб", "ютюб", "Утуб", "утуб"):
                 if yt in say:
                     try:
-                        webbrowser.open_new_tab('https://youtube.com/')
+                        open_url("https://youtube.com/")
+
                         toSpeak = "Открываю YouTube."
                     except Exception:
                         toSpeak = "Не удалось открыть YouTube."
@@ -54,7 +58,8 @@ def main(say, widget):
                 if goo in say:
                     try:
                         toSpeak = "Открываю сайт Google"
-                        webbrowser.open_new_tab("https://google.com/")
+
+                        open_url("https://google.com/")
                     except Exception:
                         toSpeak = "Не удалось открыть сайт Google."
                         
@@ -80,7 +85,7 @@ def main(say, widget):
                 if github in say:
                     toSpeak = "Открываю сайт GitHub..."
                     try:
-                        subprocess.run(["xdg-open", "https://github.com/"])
+                        open_url("https://github.com/")
                     except Exception:
                         toSpeak = "Не удалось открыть сайт GitHub."
                         
@@ -116,3 +121,19 @@ def main(say, widget):
     if toSpeak != "":
         speak.speak(toSpeak, widget)
     return toSpeak
+
+
+def open_url(url):
+    # Импорт Java-классов.
+    PythonActivity = autoclass("org.kivy.android.PythonActivity")
+    Intent = autoclass("android.content.Intent")
+    Uri = autoclass("android.net.Uri")
+
+    # Создание Intent'a.
+    intent = Intent()
+    intent.setAction(Intent.ACTION_VIEW)
+
+    intent.setData(Uri.parse(url))  # Установка ссылки для открытия.
+
+    currentActivity = cast('android.app.Activity', PythonActivity.mActivity)
+    currentActivity.startActivity(intent)

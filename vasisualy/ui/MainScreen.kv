@@ -1,0 +1,81 @@
+<MainScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        
+        MDToolbar:
+        	title: ''
+        	elevation: 10
+        	left_action_items: [['menu', lambda x: drawer.set_state("open"), "Меню приложения"]]
+        	
+        ScrollView:
+            BoxLayout:
+                id: layoutscr
+                orientation: "vertical"
+                spacing: "10dp"
+                padding: "15dp"
+                size_hint_y: 0.87
+                minimum_height: self.height
+        GridLayout:
+            cols: 3
+            size_hint: (1, 0.13)
+            spacing: "10dp"
+            padding: "14dp"
+            MDTextField:
+                id: input
+                on_text_validate: root.vasmsg()
+                text_validate_unfocus: False
+                hint_text: "Скажите что-нибудь Васисуалию."
+            MDRectangleFlatButton:
+                size_hint_x: 0.23
+                on_release: root.vasmsg()
+                
+	MDNavigationDrawer:
+    	id: drawer
+    	
+    	BoxLayout:
+    		orientation: "vertical"
+    		padding: "10dp"
+    		spacing: "8dp"
+    		AnchorLayout:
+    			anchor_x: "left"
+    			size_hint_y: None
+    			height: logo.height
+    			
+    			Image:
+    				id: logo
+    				size_hint: 1, None
+    				size: "128dp", "128dp"
+    				source: "vasisualy/ui/logo.png"
+    				
+    		MDLabel:
+				text: "Vasisualy"
+				font_style: "Button"
+				size_hint_y: None
+				height: self.texture_size[1]
+    				
+			ScrollView:
+				DrawerList:
+					id: d_list
+					OneLineIconListItem:
+						id: settings
+						text: "Настройки"
+						on_press:
+							root.no_settings()
+						IconLeftWidget:
+							id: settings_icon
+							icon: "settings"
+							on_press:
+								root.no_settings()
+					OneLineIconListItem:
+						id: about
+						text: "О программе"
+						on_press:
+							root.ids.drawer.set_state("close")
+							app.screen_manager.current = "about"
+						IconLeftWidget:
+							id: about_icon
+							icon: "information-outline"
+							on_press:
+								root.ids.drawer.set_state("close")
+								app.screen_manager.current = "about"
+							

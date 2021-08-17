@@ -45,24 +45,23 @@ def game(say, widget):
     gameState = True
     if say == "Выстрел" or say == "выстрел":
         bullet = random.choice([0, 0, 0, 0, 0, 1])
-        appDir = os.path.dirname(os.path.realpath(__file__))
         if bullet == 1:
             speak.speak("Ты проиграл.", widget)
-            mPlayer.setDataSource(f'{appDir}/../assets/shot.wav')
+            mPlayer.setDataSource(f'vasisualy/assets/shot.wav')
             mPlayer.prepare()
             mPlayer.start()
             mPlayer.release()
             gameState = False
         else:
             speak.speak("Кручу барабан...", widget)
-            mPlayer.setDataSource(f'{appDir}/../assets/misfire.wav')
+            mPlayer.setDataSource(f'vasisualy/assets/misfire.wav')
             mPlayer.prepare()
             mPlayer.start()
             mPlayer.release()
             bullet = random.choice([0, 0, 0, 0, 0, 1])
             if bullet == 1:
                 speak.speak("Ты выиграл.", widget)
-                mPlayer.setDataSource(f'{appDir}/../assets/shot.wav')
+                mPlayer.setDataSource(f'vasisualy/assets/shot.wav')
                 mPlayer.prepare()
                 mPlayer.start()
                 mPlayer.release()

@@ -3,6 +3,7 @@ import sys
 from glob import glob
 import importlib
 from ..core import speak
+from ..utils.tmpdir import tmp
 
 
 def _get_skill_dirs():
@@ -10,7 +11,7 @@ def _get_skill_dirs():
     skill_dirs = []
 
     for skill_dir in skill_pathnames:
-        if os.path.isdir(skill_dir) and ("__init__.py" in os.listdir(skill_dir)):
+        if os.path.isdir(skill_dir) and ("__init__.pyc" in os.listdir(skill_dir)):
             skill_dirs.append(skill_dir.rstrip('/'))  # Запись всех путей в список
 
     return skill_dirs
@@ -20,8 +21,8 @@ def _get_skills_names():
     # Получает названия всех директорий навыков
     skills_names = []
 
-    for file in os.listdir(__file__.replace("skill_loader.py", "")):
-        if os.path.isdir(str(os.path.abspath(__file__)).replace("skill_loader.py", '') + f"/{file}"):
+    for file in os.listdir(__file__.replace("skill_loader.pyc", "")):
+        if os.path.isdir(str(os.path.abspath(__file__)).replace("skill_loader.pyc", '') + f"/{file}"):
             skills_names.append(file)
 
     return skills_names
@@ -43,7 +44,7 @@ def load():
     skills = _relation()
 
     for skill in skills:
-        main_file_path = f"{skills[skill]}/__init__.py"
+        main_file_path = f"{skills[skill]}/__init__.pyc"
         spec = importlib.util.spec_from_file_location(skill, main_file_path)
         mod = importlib.util.module_from_spec(spec)
         sys.modules[skill] = mod
@@ -61,3 +62,12 @@ def run_skills(user_message, widget):
             break
 
     return result
+
+
+def run_looped(user_message, widget):
+    with open(f".skill_lock", 'r') as f:
+        # Получение первой строки файла блокировки в качестве имени навыка
+        skill_name = f.read()
+    result = sys.modules[skill_name].loop(user_message)
+
+    speak.speak(result, widget)

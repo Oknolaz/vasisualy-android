@@ -1,0 +1,47 @@
+<AboutScreen>:
+	BoxLayout:
+		orientation: "vertical"
+		
+		MDToolbar:
+			title: "О программе"
+			left_action_items: [["keyboard-backspace", lambda x: app.back_to_main()]]
+			elevation: 10
+		
+		MDLabel:
+			font_style: "Button"
+			text: "Голосовой ассистент Васисуалий"
+			halign: "center"
+			size_hint_y: 0.2
+			
+		MDLabel:
+			text: "v0.7.2"
+			halign: "center"
+			size_hint_y: 0.15
+			
+		MDLabel:
+			text: "Свободный русскоязычный голосовой ассистент."
+			halign: "center"
+			size_hint_y: 0.15
+			
+		Widget:
+			size_hint: 1, 0.3
+			
+		BoxLayout:
+			padding: "15dp"
+			spacing: "5dp"
+			MDRoundFlatIconButton:
+				icon: "github-circle"
+				text: "Исходный код"
+				size_hint_x: 0.33
+				on_release: root.source_code_open()
+			MDRoundFlatIconButton:
+				icon: "bug"
+				text: "Сообщить об ошибке"
+				size_hint_x: 0.33
+				on_release: root.source_code_open()
+			MDRoundFlatIconButton:
+				icon: "open-source-initiative"
+				text: "Лицензия"
+				size_hint_x: 0.33
+				on_release: root.source_code_open()
+			

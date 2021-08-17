@@ -11,7 +11,7 @@ def main(say, widget):
             bye = random.choice(("Пока, мой друг.", "Пока, товарищ.", "До встречи.", "Прощай.", "До свидания.",
                                  "Не покидай меня!", "Очень жаль расставаться с тобой."))
             speak.speak(bye, widget)
-            time.sleep(10)
+            time.sleep(1)
             exit()
             
     return ""
