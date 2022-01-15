@@ -28,7 +28,7 @@ source.exclude_dirs = bin
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.7.1
+version = 0.8.1
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -36,7 +36,7 @@ version = 0.7.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd,plyer,pyowm,wikipedia,geocoder,translate,requests,BeautifulSoup4,lxml,geojson,urllib3,chardet,idna,PySocks,libbz2,ratelim,decorator,click,httpcore,sniffio,h11,httpx,rfc3986,ru_word2number,android
+requirements = python3,kivy,kivymd,plyer,pyowm,wikipedia,geocoder,translate,requests,BeautifulSoup4,lxml,geojson,urllib3,chardet,idna,PySocks,libbz2,ratelim,decorator,click,httpcore,sniffio,h11,httpx,rfc3986,ru_word2number,android,fuzzywuzzy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
